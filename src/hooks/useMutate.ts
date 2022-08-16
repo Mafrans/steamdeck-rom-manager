@@ -1,14 +1,19 @@
 import { useSWRConfig } from "swr";
 import { apiFetcher } from "../utils/apiFetcher";
 
-export const useMutate = <T>(path: string, options?: RequestInit) => {
+export const useMutate = <T = any, K = unknown>(
+  path: string,
+  options?: RequestInit
+): ((data: T) => Promise<K>) => {
   const { mutate } = useSWRConfig();
-  return (data: T) => {
-    apiFetcher(path, {
+  return async (data: T) => {
+    const response = await apiFetcher(path, {
       ...options,
       method: options?.method ?? "POST",
       body: JSON.stringify(data),
     });
+
     mutate(path);
+    return response as K;
   };
 };
