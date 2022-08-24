@@ -19,6 +19,6 @@
     "jsxFragmentFactory": "Fragment",
     "typeRoots": ["./node_modules/css.gg/icons/all.d.ts"]
   },
-  "include": ["src", "api"],
+  "include": ["src", "src-uploader"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
