@@ -17,6 +17,8 @@ func main() {
 
 	app.Use(cors.New(corsConfig))
 
+	CreateUploaderRoutes(app)
+
 	app.GET("/", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{
 			"text": "Hello World!",

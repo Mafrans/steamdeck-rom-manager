@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "build:api": "cd ./src-api && GOOS=linux go build -o ../src-tauri/binaries/api-x86_64-unknown-linux-gnu src/main.go",
+    "build:uploader": "esbuild src-uploader/main.tsx --bundle --minify --outdir=src-api/uploader",
+    "build:api": "npm run build:uploader && cd ./src-api && GOOS=linux go build -o ../src-tauri/binaries/api-x86_64-unknown-linux-gnu src/main.go",
     "preview": "vite preview",
     "tauri": "tauri",
     "package": "npm run build:api"
