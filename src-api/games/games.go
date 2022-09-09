@@ -3,7 +3,7 @@ package games
 import (
 	"encoding/json"
 	"log"
-	"mafrans/steamdeck-rom-manager/src/utils"
+	"mafrans/steamdeck-rom-manager/utils"
 	"os"
 	"path/filepath"
 )

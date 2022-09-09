@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"mafrans/steamdeck-rom-manager/src/games"
+	"mafrans/steamdeck-rom-manager/games"
+	"mafrans/steamdeck-rom-manager/upload"
 	"net/http"
 
 	"github.com/gin-contrib/cors"
@@ -17,7 +18,7 @@ func main() {
 
 	app.Use(cors.New(corsConfig))
 
-	CreateUploaderRoutes(app)
+	upload.CreateUploaderRoutes(app)
 
 	app.GET("/", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{

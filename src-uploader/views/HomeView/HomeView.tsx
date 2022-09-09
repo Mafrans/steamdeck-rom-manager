@@ -1,3 +1,3 @@
 export function HomeView({}): JSX.Element {
-  return <div></div>;
+  return <div>Test6</div>;
 }
