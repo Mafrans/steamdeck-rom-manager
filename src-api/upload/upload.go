@@ -26,9 +26,8 @@ func CreateUploaderRoutes(app *gin.Engine) {
 	store.UseIn(composer)
 
 	handler, err := tusd.NewHandler(tusd.Config{
-		BasePath:              "/files/",
-		StoreComposer:         composer,
-		NotifyCompleteUploads: true,
+		BasePath:      "/files/",
+		StoreComposer: composer,
 	})
 
 	if err != nil {
@@ -42,8 +41,7 @@ func CreateUploaderRoutes(app *gin.Engine) {
 		}
 	}()
 
-	http.Handle("/files/", http.StripPrefix("/files/", handler))
-
+	app.Any("/files/*file", gin.WrapH(http.StripPrefix("/files/", handler.Middleware(handler))))
 	app.GET("/upload", func(ctx *gin.Context) {
 		ctx.Data(http.StatusOK, "text/html", []byte(index))
 	})

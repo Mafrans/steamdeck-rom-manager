@@ -15,6 +15,8 @@ func main() {
 
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AllowAllOrigins = true
+	corsConfig.AllowHeaders = []string{"Authorization", "Origin", "X-Requested-With", "X-Request-ID", "X-HTTP-Method-Override", "Content-Type", "Upload-Length", "Upload-Offset", "Tus-Resumable", "Upload-Metadata", "Upload-Defer-Length", "Upload-Concat"}
+	corsConfig.MaxAge = 86400
 
 	app.Use(cors.New(corsConfig))
 

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:api": "nodemon -w src-app -w src-uploader --signal SIGTERM -e go,ts,tsx,css,html -x \"run-s clean:uploader build:api start:api\"",
+    "dev:api": "nodemon -w src-api -w src-uploader --signal SIGTERM -e go,ts,tsx -x \"run-s clean:uploader build:api start:api\"",
     "build": "tsc && vite build",
     "build:uploader": "vite build src-uploader",
     "build:api": "npm run build:uploader && cd ./src-api && GOOS=linux go build -o ../src-tauri/binaries/api-x86_64-unknown-linux-gnu main.go",
@@ -22,7 +22,8 @@
     "preact": "^10.9.0",
     "react-icons": "^4.4.0",
     "react-router-dom": "^6.3.0",
-    "swr": "^1.3.0"
+    "swr": "^1.3.0",
+    "tus-js-client": "^3.0.0"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.3.0",
