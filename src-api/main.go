@@ -28,18 +28,6 @@ func main() {
 		})
 	})
 
-	app.POST("/games", func(ctx *gin.Context) {
-		game := games.Game{
-			Id:   "123",
-			Name: "Test game",
-		}
-
-		game.Save()
-
-		ctx.Status(http.StatusCreated)
-		ctx.Done()
-	})
-
 	app.GET("/games", func(ctx *gin.Context) {
 		games := games.All()
 		fmt.Println(games)

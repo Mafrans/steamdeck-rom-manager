@@ -3,8 +3,10 @@ package upload
 import (
 	"embed"
 	"log"
+	"mafrans/steamdeck-rom-manager/games"
 	"mafrans/steamdeck-rom-manager/utils"
 	"net/http"
+	"os"
 	"path"
 
 	"github.com/gin-gonic/gin"
@@ -62,7 +64,16 @@ func handleUploadEvents(handler *tusd.Handler) {
 		log.Printf("[UPLOAD]: Upload %s finished\n", event.Upload.ID)
 		log.Println(event.Upload.Storage)
 
-		hash, _ := utils.HashFileSHA1(event.Upload.Storage["Path"])
-		log.Println(hash)
+		uploadPath := event.Upload.Storage["Path"]
+		gameMeta := games.Identify(uploadPath)
+		gameMeta.File = gameMeta.GetGamePath(event.Upload.MetaData["filename"])
+		if gameMeta.Game != nil {
+			os.Rename(uploadPath, gameMeta.File)
+			gameMeta.Save()
+
+			// Delete temporary files
+			os.Remove(uploadPath)
+			os.Remove(uploadPath + ".info")
+		}
 	}
 }

@@ -1,26 +1,28 @@
 package games
 
 import (
+	_ "embed"
 	"encoding/json"
+	"fmt"
 	"log"
 	"mafrans/steamdeck-rom-manager/utils"
 	"os"
 	"path/filepath"
 )
 
-type Game struct {
-	Id   string
-	Name string
+type GameMeta struct {
+	Game *Game  `json:"game"`
+	File string `json:"file"`
 }
 
-func All() []Game {
+func All() []GameMeta {
 	gameDir := utils.GetConfigPath("games", "")
 	gameFolders, err := os.ReadDir(gameDir)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	games := make([]Game, 0)
+	games := make([]GameMeta, 0)
 	for _, folder := range gameFolders {
 		if folder.IsDir() {
 			game, ok := ById(folder.Name())
@@ -33,20 +35,29 @@ func All() []Game {
 	return games
 }
 
-func (game *Game) Save() {
-	metaFile := utils.GetConfigPath(filepath.Join("games", game.Id), "metadata.json")
-	json, _ := json.Marshal(game)
+func (gamemeta *GameMeta) Save() {
+	gamedir := gamemeta.Game.Name
+	if gamedir == "" {
+		gamedir = fmt.Sprint(gamemeta.Game.Id)
+	}
+
+	metaFile := gamemeta.GetGamePath("metadata.json")
+	json, _ := json.Marshal(gamemeta)
 
 	os.WriteFile(metaFile, json, 0755)
 }
 
-func ById(id string) (Game, bool) {
+func ById(id string) (GameMeta, bool) {
 	metaFile := utils.GetConfigPath(filepath.Join("games", id), "metadata.json")
 	content, _ := os.ReadFile(metaFile)
 
-	var game Game
+	var game GameMeta
 	if json.Unmarshal(content, &game) == nil {
 		return game, true
 	}
 	return game, false
+}
+
+func (gamemeta *GameMeta) GetGamePath(file string) string {
+	return utils.GetConfigPath(filepath.Join("games", gamemeta.Game.Name), file)
 }

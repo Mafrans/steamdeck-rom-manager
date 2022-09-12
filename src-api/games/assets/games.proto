@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+option go_package = "mafrans/steamdeck-rom-manager/games";
+
+message Games { repeated Game games = 1; }
+
+message Game {
+  optional int32 id = 1;
+  string name = 2;
+  optional string franchise = 3;
+  uint32 crcHash = 4;
+  string console = 5;
+}
