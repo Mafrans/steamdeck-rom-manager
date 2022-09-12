@@ -1,7 +1,10 @@
 package utils
 
 import (
+	"crypto/sha1"
+	"encoding/hex"
 	"errors"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -31,4 +34,25 @@ func GetConfigPath(dir string, file string) string {
 	}
 
 	return dirPath
+}
+
+func HashFileSHA1(filePath string) (string, error) {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return "", err
+	}
+
+	defer file.Close()
+
+	hash := sha1.New()
+
+	// Copy the file into the hash interface
+	if _, err := io.Copy(hash, file); err != nil {
+		return "", err
+	}
+
+	// Get the first 20 bytes of the hash
+	hashInBytes := hash.Sum(nil)[:20]
+	return hex.EncodeToString(hashInBytes), nil
+
 }
