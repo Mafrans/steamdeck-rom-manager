@@ -47,6 +47,19 @@ func main() {
 		}
 	})
 
+	app.GET("/games/:id/cover", func(ctx *gin.Context) {
+		id := ctx.Params.ByName("id")
+		game, ok := games.ById(id)
+
+		if ok {
+			ctx.File(game.Artwork.Cover)
+			ctx.Done()
+		} else {
+			ctx.Status(http.StatusNotFound)
+			ctx.Done()
+		}
+	})
+
 	app.DELETE("/games", func(ctx *gin.Context) {
 		ctx.Status(http.StatusNoContent)
 		ctx.Done()

@@ -6,3 +6,5 @@ export const apiFetcher = async (path: string, options: RequestInit) => {
 
   return await res.json();
 };
+
+export const getAPIUrl = (path: string) => new URL(path, baseURL).href;

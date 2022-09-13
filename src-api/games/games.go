@@ -39,11 +39,6 @@ func All() []GameMeta {
 }
 
 func (gamemeta *GameMeta) Save() {
-	gamedir := gamemeta.Game.Name
-	if gamedir == "" {
-		gamedir = fmt.Sprint(gamemeta.Game.Id)
-	}
-
 	metaFile := gamemeta.GetGamePath("metadata.json")
 	json, _ := json.Marshal(gamemeta)
 
@@ -62,5 +57,8 @@ func ById(id string) (GameMeta, bool) {
 }
 
 func (gamemeta *GameMeta) GetGamePath(file string) string {
-	return utils.GetConfigPath(filepath.Join("games", gamemeta.Game.Name), file)
+	return utils.GetConfigPath(
+		filepath.Join("games", fmt.Sprintf("%d", *gamemeta.Game.Id)),
+		file,
+	)
 }
