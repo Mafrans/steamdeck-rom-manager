@@ -11,8 +11,11 @@ import (
 )
 
 type GameMeta struct {
-	Game *Game  `json:"game"`
-	File string `json:"file"`
+	Game    *Game  `json:"game"`
+	File    string `json:"file"`
+	Artwork struct {
+		Cover string `json:"cover"`
+	} `json:"artwork"`
 }
 
 func All() []GameMeta {

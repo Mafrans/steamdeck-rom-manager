@@ -69,6 +69,12 @@ func handleUploadEvents(handler *tusd.Handler) {
 		gameMeta.File = gameMeta.GetGamePath(event.Upload.MetaData["filename"])
 		if gameMeta.Game != nil {
 			os.Rename(uploadPath, gameMeta.File)
+
+			cover := games.DownloadCoverArt(gameMeta)
+			if cover != "" {
+				gameMeta.Artwork.Cover = cover
+			}
+
 			gameMeta.Save()
 
 			// Delete temporary files
