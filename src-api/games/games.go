@@ -1,21 +1,23 @@
 package games
 
 import (
+	"bytes"
 	_ "embed"
-	"encoding/json"
 	"fmt"
 	"log"
 	"mafrans/steamdeck-rom-manager/utils"
 	"os"
 	"path/filepath"
+
+	"github.com/BurntSushi/toml"
 )
 
 type GameMeta struct {
-	Game    *Game  `json:"game"`
-	File    string `json:"file"`
+	Game    *Game
+	File    string
 	Artwork struct {
-		Cover string `json:"cover"`
-	} `json:"artwork"`
+		Cover string
+	}
 }
 
 func All() []GameMeta {
@@ -39,18 +41,21 @@ func All() []GameMeta {
 }
 
 func (gamemeta *GameMeta) Save() {
-	metaFile := gamemeta.GetGamePath("metadata.json")
-	json, _ := json.Marshal(gamemeta)
+	metaFile := gamemeta.GetGamePath("metadata.toml")
 
-	os.WriteFile(metaFile, json, 0755)
+	var buf bytes.Buffer
+	enc := toml.NewEncoder(&buf)
+	enc.Encode(gamemeta)
+
+	os.WriteFile(metaFile, buf.Bytes(), 0755)
 }
 
 func ById(id string) (GameMeta, bool) {
-	metaFile := utils.GetConfigPath(filepath.Join("games", id), "metadata.json")
+	metaFile := utils.GetConfigPath(filepath.Join("games", id), "metadata.toml")
 	content, _ := os.ReadFile(metaFile)
 
 	var game GameMeta
-	if json.Unmarshal(content, &game) == nil {
+	if _, err := toml.Decode(string(content), &game); err == nil {
 		return game, true
 	}
 	return game, false
