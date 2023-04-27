@@ -20,22 +20,22 @@ var uploaderAssets embed.FS
 var uploaderIndex string
 
 // CreateUploaderRoutes creates the gin routes for tusd
-func CreateUploaderRoutes(app *gin.Engine) {
+func CreateUploaderRoutes(relativePath string, app *gin.Engine) {
 	handler := createHandler()
 
 	go handleUploadEvents(handler)
 
-	app.GET("/", func(ctx *gin.Context) {
+	app.GET(relativePath, func(ctx *gin.Context) {
 		ctx.Data(http.StatusOK, "text/html", []byte(uploaderIndex))
 	})
 
-	app.GET("/assets/:asset", func(ctx *gin.Context) {
+	app.GET(relativePath + "/assets/:asset", func(ctx *gin.Context) {
 		asset := ctx.Param("asset")
 		ctx.FileFromFS(path.Join("uploader/assets", asset), http.FS(uploaderAssets))
 	})
 
 	// Handle file upload routes
-	app.Any("/files/*file", gin.WrapH(http.StripPrefix("/files/", handler.Middleware(handler))))
+	app.Any(relativePath + "/files/*file", gin.WrapH(http.StripPrefix("/files/", handler.Middleware(handler))))
 }
 
 func createHandler() *tusd.Handler {
