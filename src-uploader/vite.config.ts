@@ -6,6 +6,6 @@ export default defineConfig({
   plugins: [preact()],
   base: "/upload",
   build: {
-    outDir: "../src-api/upload",
+    outDir: "../src-api/uploader",
   },
 });

@@ -4,7 +4,7 @@
 // 	protoc        v3.21.4
 // source: games.proto
 
-package games
+package main
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"

@@ -1,9 +1,8 @@
+// The main package
 package main
 
 import (
 	"fmt"
-	"mafrans/steamdeck-rom-manager/games"
-	"mafrans/steamdeck-rom-manager/upload"
 	"net/http"
 
 	"github.com/gin-contrib/cors"
@@ -20,7 +19,7 @@ func main() {
 
 	app.Use(cors.New(corsConfig))
 
-	upload.CreateUploaderRoutes(app)
+	CreateUploaderRoutes(app)
 
 	app.GET("/", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{
@@ -29,7 +28,7 @@ func main() {
 	})
 
 	app.GET("/games", func(ctx *gin.Context) {
-		games := games.All()
+		games := AllGames()
 		fmt.Println(games)
 
 		ctx.JSONP(http.StatusOK, games)
@@ -37,7 +36,7 @@ func main() {
 
 	app.GET("/games/:id", func(ctx *gin.Context) {
 		id := ctx.Params.ByName("id")
-		game, ok := games.ById(id)
+		game, ok := GetGameByID(id)
 
 		if ok {
 			ctx.JSONP(http.StatusOK, game)
@@ -49,7 +48,7 @@ func main() {
 
 	app.GET("/games/:id/cover", func(ctx *gin.Context) {
 		id := ctx.Params.ByName("id")
-		game, ok := games.ById(id)
+		game, ok := GetGameByID(id)
 
 		if ok {
 			ctx.File(game.Artwork.Cover)

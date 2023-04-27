@@ -1,4 +1,4 @@
-package games
+package main
 
 import (
 	"errors"
@@ -11,6 +11,7 @@ import (
 	"strings"
 )
 
+// DownloadCoverArt downloads the cover art for a game from libretro-thumbnails and saves it at a path
 func DownloadCoverArt(game *Game, path string) error {
 	uri := fmt.Sprintf(
 		"https://github.com/libretro-thumbnails/%s/raw/master/Named_Boxarts/%s.png",
@@ -47,5 +48,6 @@ func DownloadCoverArt(game *Game, path string) error {
 		}, path)
 	}
 
+	PrepareFile(path);
 	return os.WriteFile(path, body, fs.ModeAppend)
 }

@@ -1,37 +1,37 @@
-package upload
+package main
 
 import (
 	"embed"
 	"log"
-	"mafrans/steamdeck-rom-manager/games"
-	"mafrans/steamdeck-rom-manager/utils"
 	"net/http"
 	"os"
 	"path"
+	"path/filepath"
 
 	"github.com/gin-gonic/gin"
 	"github.com/tus/tusd/pkg/filestore"
 	tusd "github.com/tus/tusd/pkg/handler"
 )
 
-//go:embed assets/*
-var fs embed.FS
+//go:embed uploader/assets/*
+var uploaderAssets embed.FS
 
-//go:embed index.html
-var index string
+//go:embed uploader/index.html
+var uploaderIndex string
 
+// CreateUploaderRoutes creates the gin routes for tusd
 func CreateUploaderRoutes(app *gin.Engine) {
 	handler := createHandler()
 
 	go handleUploadEvents(handler)
 
 	app.GET("/upload", func(ctx *gin.Context) {
-		ctx.Data(http.StatusOK, "text/html", []byte(index))
+		ctx.Data(http.StatusOK, "text/html", []byte(uploaderIndex))
 	})
 
 	app.GET("/upload/assets/:asset", func(ctx *gin.Context) {
 		asset := ctx.Param("asset")
-		ctx.FileFromFS(path.Join("assets", asset), http.FS(fs))
+		ctx.FileFromFS(path.Join("uploader/assets", asset), http.FS(uploaderAssets))
 	})
 
 	// Handle file upload routes
@@ -41,7 +41,7 @@ func CreateUploaderRoutes(app *gin.Engine) {
 func createHandler() *tusd.Handler {
 	composer := tusd.NewStoreComposer()
 	store := filestore.FileStore{
-		Path: utils.GetConfigPath("tmp", ""),
+		Path: PrepareFile(GetTmpDir(), ""),
 	}
 	store.UseIn(composer)
 
@@ -65,25 +65,30 @@ func handleUploadEvents(handler *tusd.Handler) {
 		log.Println(event.Upload.Storage)
 
 		uploadPath := event.Upload.Storage["Path"]
-		meta := games.Identify(uploadPath)
-		meta.File = meta.GetGamePath(event.Upload.MetaData["filename"])
-		
-		if meta.Game != nil {
-			os.Rename(uploadPath, meta.File)
-
-			cover := meta.GetGamePath("cover.png")
-			err := games.DownloadCoverArt(meta.Game, cover);
-			if err != nil {
-				println(err)
-			} else {
-				meta.Artwork.Cover = cover
-			}
-
-			meta.Save()
-
-			// Delete temporary files
-			os.Remove(uploadPath)
-			os.Remove(uploadPath + ".info")
+		meta := IdentifyGame(uploadPath)
+		if meta.Game == nil {
+			log.Println("Upload failed: Failed to identify ROM details")
+			return
 		}
+
+		gameDir, err := meta.GetGameDir();
+		if err != nil {
+			log.Println("Upload failed: Could not access game directory")
+			return
+		}
+
+		meta.File = filepath.Join(gameDir, event.Upload.MetaData["filename"])
+		os.Rename(uploadPath, meta.File)
+
+		meta.Artwork.Cover = filepath.Join(gameDir, "cover.png")
+		if err = DownloadCoverArt(meta.Game, meta.Artwork.Cover); err != nil {
+			log.Println("Couldn't download cover art:", err)
+		}
+
+		meta.Save()
+
+		// Delete temporary files
+		os.Remove(uploadPath)
+		os.Remove(uploadPath + ".info")
 	}
 }

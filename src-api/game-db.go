@@ -1,4 +1,4 @@
-package games
+package main
 
 import (
 	"bytes"
@@ -12,7 +12,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-//go:embed assets/games.compressed.buf
+//go:embed games/games.compressed.buf
 var compressedGameDB []byte
 var gameDB *Games
 
@@ -38,7 +38,8 @@ func readGameDB() *Games {
 	return games
 }
 
-func Identify(file string) GameMeta {
+// IdentifyGame matches a game file to the data by its CRC hash
+func IdentifyGame(file string) GameMeta {
 	if gameDB == nil {
 		gameDB = readGameDB()
 	}
