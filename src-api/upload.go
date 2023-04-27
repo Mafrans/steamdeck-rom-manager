@@ -25,11 +25,11 @@ func CreateUploaderRoutes(app *gin.Engine) {
 
 	go handleUploadEvents(handler)
 
-	app.GET("/upload", func(ctx *gin.Context) {
+	app.GET("/", func(ctx *gin.Context) {
 		ctx.Data(http.StatusOK, "text/html", []byte(uploaderIndex))
 	})
 
-	app.GET("/upload/assets/:asset", func(ctx *gin.Context) {
+	app.GET("/assets/:asset", func(ctx *gin.Context) {
 		asset := ctx.Param("asset")
 		ctx.FileFromFS(path.Join("uploader/assets", asset), http.FS(uploaderAssets))
 	})
