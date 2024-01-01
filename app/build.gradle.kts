@@ -13,6 +13,7 @@ plugins {
     application
 
     id("com.google.protobuf") version "0.9.4"
+    kotlin("plugin.serialization") version "1.9.21"
 }
 
 
@@ -28,6 +29,10 @@ dependencies {
     implementation("io.javalin:javalin:5.6.3")
     implementation("me.desair.tus:tus-java-server:1.0.0-3.0")
     implementation("org.slf4j:slf4j-simple:2.0.7")
+    implementation("com.akuleshov7:ktoml-core:0.5.0")
+    implementation("com.akuleshov7:ktoml-file:0.5.0")
+    implementation("com.akuleshov7:ktoml-source:0.5.0")
+
 }
 
 protobuf {
@@ -70,6 +75,6 @@ tasks.register("buildClient") {
     }
 }
 
-tasks.named("build") {
+tasks.named("classes") {
     dependsOn("buildClient")
 }

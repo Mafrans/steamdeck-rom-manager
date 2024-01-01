@@ -14,8 +14,6 @@ class ClientHandler : Handler {
     }
 
     override fun handle(ctx: Context) {
-        println("Hello!")
-
         if (content != null) {
             ctx.html(content ?: "")
         } else throw NotFoundResponse()

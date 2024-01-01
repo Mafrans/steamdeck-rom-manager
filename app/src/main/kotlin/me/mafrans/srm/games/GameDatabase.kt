@@ -1,11 +1,11 @@
 package me.mafrans.srm.games
 
-import GamesOuterClass.*
-import java.io.ByteArrayOutputStream
-import java.util.zip.Inflater
+import Games.*
+import java.io.InputStream
+import java.util.zip.GZIPInputStream
 
-class GameDatabase(private val resource: String, private val isCompressed: Boolean = false) : HashMap<Int, Game>() {
-    private val crcIndex = hashMapOf<Int, Int>()
+class GameDatabase(private val resource: String, private val isCompressed: Boolean = false) : HashMap<Int, GameDBEntry>() {
+    private val crcIndex = hashMapOf<Long, Int>()
 
     init {
         val games = readGames()
@@ -13,37 +13,27 @@ class GameDatabase(private val resource: String, private val isCompressed: Boole
             this[game.id] = game
             crcIndex[game.crcHash] = game.id
         }
+
+        val tetris = firstNotNullOf { (_, v) -> if (v.name.startsWith("Tetris (World)")) v else null }
     }
 
-    fun getByCRC(crc: Int): Game? {
+    fun getByCRC(crc: Long): GameDBEntry? {
         val id = crcIndex[crc] ?: return null
         return this[id]
     }
 
-    private fun readGames(): List<Game> {
+    private fun readGames(): List<GameDBEntry> {
         val stream = javaClass.getResourceAsStream(resource)
                 ?: return emptyList()
 
-        var bytes = stream.readAllBytes()
-        if (isCompressed) {
-            bytes = decompress(bytes)
-        }
+        val bytes = if (isCompressed) decompress(stream) else stream.readAllBytes()
 
-        val gamesContainer = Games.newBuilder().mergeFrom(bytes)
+        val gamesContainer = GameDB.newBuilder().mergeFrom(bytes)
         return gamesContainer.gamesList
     }
 
-    private fun decompress(input: ByteArray): ByteArray {
-        val inflater = Inflater().apply { setInput(input) }
-        val buf = ByteArray(1024)
-        val outStream = ByteArrayOutputStream()
-        outStream.use {
-            do {
-                val c = inflater.inflate(buf)
-                it.write(buf, 0, c)
-            } while (c != 0)
-            inflater.end()
-        }
-        return outStream.toByteArray()
+    private fun decompress(input: InputStream): ByteArray {
+        val gzip = GZIPInputStream(input)
+        return gzip.readAllBytes()
     }
 }

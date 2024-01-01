@@ -1,11 +1,11 @@
 syntax = "proto3";
 
-message Games { repeated Game games = 1; }
+message GameDB { repeated GameDBEntry games = 1; }
 
-message Game {
+message GameDBEntry {
   optional int32 id = 1;
   string name = 2;
   optional string franchise = 3;
-  uint32 crcHash = 4;
+  int64 crcHash = 4;
   string console = 5;
 }

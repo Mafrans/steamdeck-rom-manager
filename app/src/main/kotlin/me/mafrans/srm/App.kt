@@ -4,19 +4,21 @@
 package me.mafrans.srm
 
 import me.mafrans.srm.games.GameDatabase
+import me.mafrans.srm.games.Library
 import me.mafrans.srm.upload.UploadServer
-import java.io.ByteArrayOutputStream
-import java.util.zip.Inflater
 
 class App {
-    val games = GameDatabase("/games.compressed.buf", true)
+    val server = UploadServer()
+    val games = GameDatabase("/gamedb.buf.gzip", true)
+    val library = Library()
 
-    init {
-        val server = UploadServer()
+    fun start() {
         server.start()
     }
 }
 
+val app = App()
+
 fun main() {
-    App()
+    app.start()
 }
