@@ -4,7 +4,7 @@ import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.*
 import io.javalin.http.staticfiles.Location
 import me.desair.tus.server.TusFileUploadService
-import me.mafrans.srm.app
+import me.mafrans.srm.GAMES
 import me.mafrans.srm.games.Game
 
 
@@ -53,7 +53,7 @@ class UploadServer() {
     }
 
     private fun handleUpload(upload: UploadedGame) {
-        val identifiedGame = app.games.getByCRC(upload.crcHash)
+        val identifiedGame = GAMES.getByCRC(upload.crcHash)
         println(identifiedGame?.name)
         if (identifiedGame == null) {
             // TODO: Handle unknown game

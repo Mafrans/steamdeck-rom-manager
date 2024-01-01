@@ -12,19 +12,23 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     application
 
-    id("com.google.protobuf") version "0.9.4"
     kotlin("plugin.serialization") version "1.9.21"
+    id("com.google.protobuf") version "0.9.4"
+    id("org.jetbrains.compose") version "1.6.0-alpha01"
 }
 
 
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
+    google()
+    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
 dependencies {
     // This dependency is used by the application.
     implementation(libs.guava)
+    implementation(compose.desktop.currentOs)
     implementation("com.google.protobuf:protobuf-kotlin:3.25.1")
     implementation("io.javalin:javalin:5.6.3")
     implementation("me.desair.tus:tus-java-server:1.0.0-3.0")

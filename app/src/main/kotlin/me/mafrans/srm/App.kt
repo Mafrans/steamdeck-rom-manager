@@ -3,22 +3,30 @@
  */
 package me.mafrans.srm
 
+import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.application
 import me.mafrans.srm.games.GameDatabase
 import me.mafrans.srm.games.Library
 import me.mafrans.srm.upload.UploadServer
 
-class App {
-    val server = UploadServer()
-    val games = GameDatabase("/gamedb.buf.gzip", true)
-    val library = Library()
+val GAMES = GameDatabase("/gamedb.buf.gzip", true)
+val SERVER = UploadServer()
+val LIBRARY = Library()
 
-    fun start() {
-        server.start()
+@Composable
+@Preview
+fun App() {
+    MaterialTheme {
+        Text("Hello world!")
     }
 }
 
-val app = App()
-
-fun main() {
-    app.start()
+fun main() = application {
+    Window(onCloseRequest = ::exitApplication) {
+        App()
+    }
 }

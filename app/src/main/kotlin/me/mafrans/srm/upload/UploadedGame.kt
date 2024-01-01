@@ -1,9 +1,7 @@
 package me.mafrans.srm.upload
 
-import com.google.common.math.IntMath.pow
-import com.google.common.math.LongMath.log10
 import me.desair.tus.server.upload.UploadInfo
-import me.mafrans.srm.app
+import me.mafrans.srm.SERVER
 import java.util.zip.CRC32
 
 private val crc = CRC32()
@@ -18,7 +16,7 @@ data class UploadedGame(val uri: String, val info: UploadInfo, val bytes: ByteAr
     }
 
     fun close() {
-        app.server.tus.deleteUpload(uri)
+        SERVER.tus.deleteUpload(uri)
     }
 
     override fun hashCode(): Int {
