@@ -1,19 +1,24 @@
 {
-	"private": true,
-	"type": "module",
-	"scripts": {
-		"dev": "vite",
-		"build": "vite build",
-		"preview": "vite preview"
-	},
-	"dependencies": {
-		"preact": "^10.13.1",
-		"preact-iso": "^2.3.2",
-		"preact-render-to-string": "^6.3.1"
-	},
-	"devDependencies": {
-		"@preact/preset-vite": "^2.5.0",
-		"typescript": "^5.3.3",
-		"vite": "^4.3.2"
-	}
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@uppy/core": "^3.8.0",
+    "@uppy/drag-drop": "^3.0.3",
+    "@uppy/progress-bar": "^3.0.4",
+    "@uppy/tus": "^3.5.0",
+    "preact": "^10.13.1",
+    "preact-iso": "^2.3.2",
+    "preact-render-to-string": "^6.3.1"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.5.0",
+    "prettier": "^3.1.1",
+    "typescript": "^5.3.3",
+    "vite": "^4.3.2"
+  }
 }
