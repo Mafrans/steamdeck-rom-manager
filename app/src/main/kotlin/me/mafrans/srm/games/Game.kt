@@ -11,6 +11,7 @@ import java.net.HttpURLConnection
 import java.net.URI
 import java.net.URL
 import java.net.URLEncoder
+import java.nio.charset.Charset
 import kotlin.io.path.createDirectories
 import kotlin.io.path.exists
 import kotlin.io.path.outputStream
@@ -19,7 +20,7 @@ import kotlin.io.path.outputStream
 data class Game(
         var id: Int,
         var title: String,
-        var console: String,
+        var console: Console,
 ) {
     @Transient
     val installPath = libraryDir.resolve(id.toString())
@@ -62,13 +63,15 @@ data class Game(
     private fun downloadCover(title: String = this.title) {
         val encodedTitle = title.replace(" ", "%20")
         val url = "https://github.com/libretro-thumbnails/%s/raw/master/Named_Boxarts/%s.png"
-                .format(console.replace(" ", "_"), encodedTitle)
+                .format(console.title.replace(" ", "_"), encodedTitle)
                 .let { URI(it).toURL() }
 
         with(url.openConnection() as HttpURLConnection) {
             val bytes = inputStream.readAllBytes()
-            if (bytes.toString().endsWith(".png")) {
-                return downloadCover(bytes.toString().removeSuffix(".png"))
+
+            val contentString = bytes.toString(Charset.forName("UTF-8"))
+            if (contentString.endsWith(".png")) {
+                return downloadCover(contentString.removeSuffix(".png"))
             }
 
             val out = coverPath.outputStream()

@@ -11,6 +11,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import me.mafrans.srm.games.GameDatabase
 import me.mafrans.srm.games.Library
+import me.mafrans.srm.ui.LibraryGrid
 import me.mafrans.srm.upload.UploadServer
 
 val GAMES = GameDatabase("/gamedb.buf.gzip", true)
@@ -22,11 +23,14 @@ val LIBRARY = Library()
 fun App() {
     MaterialTheme {
         Text("Hello world!")
+        LibraryGrid()
     }
 }
 
 fun main() = application {
-    Window(onCloseRequest = ::exitApplication) {
+    Window(onCloseRequest = ::exitApplication, resizable = true) {
         App()
     }
+
+    SERVER.start()
 }
